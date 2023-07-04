@@ -1,8 +1,19 @@
+import { useEffect, useState } from "react";
 import { Button, Col, Image, Row } from "react-bootstrap";
 
-export default function ProfilePostCard({ content }) {
+export default function ProfilePostCard({ content, postId }) {
+  const [likes, setLikes] = useState(0);
   const pic =
     "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
+
+  useEffect(() => {
+    fetch(
+      `https://twitter-api-sigmaschooltech.sigma-school-full-stack.repl.co/likes/post/${postId}`
+    )
+      .then((response) => response.json())
+      .then((data) => setLikes(data.length))
+      .catch((error) => console.error("Error:", error));
+  }, [postId]);
   return (
     <Row
       className="p-3"
@@ -26,7 +37,7 @@ export default function ProfilePostCard({ content }) {
             <i className="bi bi-repeat"></i>
           </Button>
           <Button variant="light">
-            <i className="bi bi-heart"></i>
+            <i className="bi bi-heart"></i> {likes}
           </Button>
           <Button variant="light">
             <i className="bi bi-graph-up"></i> 61
