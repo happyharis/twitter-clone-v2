@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-
+import jwt_decode from "jwt-decode";
+import { useEffect, useState } from "react";
 import { Button, Col, Image, Nav, Row } from "react-bootstrap";
 import ProfilePostCard from "./ProfilePostCard";
 
@@ -10,11 +10,23 @@ export default function ProfileMidBody() {
   const pic =
     "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
 
-  useEffect(() => {
-    fetch("https://restful-api-demo-2.sigma-schoolsc1.repl.co/posts")
+  // Fetch posts based on user id
+  const fetchPosts = (userId) => {
+    fetch(
+      `https://twitter-api-sigmaschooltech.sigma-school-full-stack.repl.co/posts/user/${userId}`
+    )
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch((error) => console.error("Error:", error));
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken"); // Replace with your token name
+    if (token) {
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.id; // Replace with the correct key from your token payload
+      fetchPosts(userId);
+    }
   }, []);
 
   return (
