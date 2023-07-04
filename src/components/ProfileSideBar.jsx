@@ -1,7 +1,7 @@
 import { Button, Col } from "react-bootstrap";
 import IconButton from "../components/IconButton";
 
-export default function ProfileSideBar({ handleLogout }) {
+export default function ProfileSideBar({ handleLogout, onTweetClick }) {
   return (
     <Col
       sm={2}
@@ -18,8 +18,12 @@ export default function ProfileSideBar({ handleLogout }) {
       <IconButton className="bi bi-patch-check" text="Verified" />
       <IconButton className="bi bi-person" text="Profile" />
       <IconButton className="bi bi-filter-circle" text="More" />
-      <IconButton className="bi bi-door-closed" text="Logout" />
-      <Button onClick={handleLogout} className="rounded-pill w-100 mb-3">
+      <IconButton
+        className="bi bi-door-closed"
+        text="Logout"
+        onClick={handleLogout}
+      />
+      <Button className="rounded-pill w-100 mb-3" onClick={onTweetClick}>
         Tweet
       </Button>
     </Col>

@@ -1,4 +1,4 @@
-import { Button, Col, Image, Nav } from "react-bootstrap";
+import { Button, Col, Image, Nav, Row } from "react-bootstrap";
 import ProfilePostCard from "./ProfilePostCard";
 
 export default function ProfileMidBody() {
@@ -22,18 +22,30 @@ export default function ProfileMidBody() {
         }}
       />
 
-      <Button className="rounded-pill" variant="outline-secondary">
-        Edit Profile
-      </Button>
-      <p className="mt-5">Haris</p>
-      <p>@haris.samingan</p>
+      <Row className="justify-content-end">
+        <Col xs="auto">
+          <Button className="rounded-pill mt-2" variant="outline-secondary">
+            Edit Profile
+          </Button>
+        </Col>
+      </Row>
+
+      <p
+        className="mt-5"
+        style={{ margin: 0, fontWeight: "bold", fontSize: "15px" }}
+      >
+        Haris
+      </p>
+      <p style={{ marginBottom: "2px" }}>@haris.samingan</p>
       <p>
         I help people switch careers to be a software developer at
         sigmaschool.co
       </p>
-      <p> Entrepreneur</p>
-      <p> 271 Following 610 Followers</p>
-      <Nav variant="underline" defaultActiveKey="/home">
+      <p>Entrepreneur</p>
+      <p>
+        <strong>271</strong> Following <strong>610</strong> Followers
+      </p>
+      <Nav variant="underline" defaultActiveKey="/home" justify>
         <Nav.Item>
           <Nav.Link eventKey="/home">Tweets</Nav.Link>
         </Nav.Item>
@@ -44,10 +56,10 @@ export default function ProfileMidBody() {
           <Nav.Link eventKey="link-2">Highlights</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-2">Media</Nav.Link>
+          <Nav.Link eventKey="link-3">Media</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-2">Likes</Nav.Link>
+          <Nav.Link eventKey="link-4">Likes</Nav.Link>
         </Nav.Item>
       </Nav>
       <ProfilePostCard />
