@@ -1,11 +1,22 @@
+import { useState, useEffect } from "react";
+
 import { Button, Col, Image, Nav, Row } from "react-bootstrap";
 import ProfilePostCard from "./ProfilePostCard";
 
 export default function ProfileMidBody() {
+  const [posts, setPosts] = useState([]);
   const url =
     "https://pbs.twimg.com/profile_banners/83072625/1602845571/1500x500";
   const pic =
     "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
+
+  useEffect(() => {
+    fetch("https://restful-api-demo-2.sigma-schoolsc1.repl.co/posts")
+      .then((response) => response.json())
+      .then((data) => setPosts(data))
+      .catch((error) => console.error("Error:", error));
+  }, []);
+
   return (
     <Col sm={6} className="bg-light" style={{ border: "1px solid lightgrey" }}>
       <Image src={url} fluid />
@@ -62,7 +73,9 @@ export default function ProfileMidBody() {
           <Nav.Link eventKey="link-4">Likes</Nav.Link>
         </Nav.Item>
       </Nav>
-      <ProfilePostCard />
+      {posts.map((post) => (
+        <ProfilePostCard key={post.id} content={post.content} />
+      ))}
     </Col>
   );
 }
