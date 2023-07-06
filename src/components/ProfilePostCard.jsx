@@ -28,21 +28,22 @@ export default function ProfilePostCard({ content, postId }) {
   const handleLike = () => (isLiked ? removeFromLikes() : addToLikes());
 
   const addToLikes = () => {
-    // logic to perform 'add like' API call and update state
-    setLikes([...likes, { user_id: userId }]);
-    // here, you will make 'add like' API call and refresh the likes data
-    axios.post(`${BASE_URL}/likes`, {
-      user_id: userId,
-      post_id: postId,
-    });
+    axios
+      .post(`${BASE_URL}/likes`, {
+        user_id: userId,
+        post_id: postId,
+      })
+      .then((response) => setLikes([...likes, response.data]))
+      .catch((error) => console.error("Error:", error));
   };
 
   const removeFromLikes = () => {
-    // logic to perform 'remove like' API call and update state
     const like = likes.find((like) => like.user_id === userId);
     if (like) {
-      axios.delete(`${BASE_URL}/likes/${like.likes_id}`);
-      setLikes(likes.filter((like) => like.user_id !== userId));
+      axios
+        .put(`${BASE_URL}/likes/${like.id}`)
+        .then(() => setLikes(likes.filter((like) => like.user_id !== userId)))
+        .catch((error) => console.error("Error:", error));
     }
   };
 
