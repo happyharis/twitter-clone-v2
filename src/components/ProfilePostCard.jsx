@@ -33,15 +33,18 @@ export default function ProfilePostCard({ content, postId }) {
         user_id: userId,
         post_id: postId,
       })
-      .then((response) => setLikes([...likes, response.data]))
+      .then((response) => {
+        setLikes([...likes, { ...response.data, likes_id: response.data.id }]);
+      })
       .catch((error) => console.error("Error:", error));
   };
 
   const removeFromLikes = () => {
     const like = likes.find((like) => like.user_id === userId);
+    console.log(like);
     if (like) {
       axios
-        .put(`${BASE_URL}/likes/${like.id}`)
+        .put(`${BASE_URL}/likes/${like.likes_id}`)
         .then(() => setLikes(likes.filter((like) => like.user_id !== userId)))
         .catch((error) => console.error("Error:", error));
     }
