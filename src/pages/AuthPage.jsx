@@ -1,9 +1,11 @@
 import {
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthProvider";
@@ -19,8 +21,11 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const auth = getAuth();
   const { currentUser } = useContext(AuthContext);
+  const provider = new GoogleAuthProvider();
 
-  if (currentUser) navigate("/profile");
+  useEffect(() => {
+    if (currentUser) navigate("/profile");
+  }, [currentUser, navigate]);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -39,6 +44,16 @@ export default function AuthPage() {
     e.preventDefault();
     try {
       const res = await signInWithEmailAndPassword(auth, username, password);
+      console.log(res.user);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handlgeGoogleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await signInWithPopup(auth, provider);
       console.log(res.user);
     } catch (error) {
       console.error(error);
@@ -65,7 +80,11 @@ export default function AuthPage() {
           Join Twitter today.
         </h2>
         <Col sm={5} className="d-grid gap-2">
-          <Button className="rounded-pill" variant="outline-dark">
+          <Button
+            className="rounded-pill"
+            variant="outline-dark"
+            onClick={handlgeGoogleLogin}
+          >
             <i className="bi bi-google"></i> Sign up with Google
           </Button>
           <Button className="rounded-pill" variant="outline-dark">
