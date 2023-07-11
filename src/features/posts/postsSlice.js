@@ -6,9 +6,28 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db, storage } from "../../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  async ({ userId, postId }) => {
+    try {
+      // Reference to the post
+      const postRef = doc(db, `users/${userId}/posts/${postId}`);
+      console.log(`users/${userId}/posts/${postId}`);
+      // Delete the post
+      await deleteDoc(postRef);
+      // Return the ID of the deleted post
+      return postId;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+);
 
 export const updatePost = createAsyncThunk(
   "posts/updatePost",
@@ -187,6 +206,11 @@ const postsSlice = createSlice({
         if (postIndex !== -1) {
           state.posts[postIndex] = updatedPost;
         }
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        const deletedPostId = action.payload;
+        // Filter out the deleted post from state
+        state.posts = state.posts.filter((post) => post.id !== deletedPostId);
       });
   },
 });

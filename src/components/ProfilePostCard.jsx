@@ -1,8 +1,12 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Button, Col, Image, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { likePost, removeLikeFromPost } from "../features/posts/postsSlice";
-import { AuthContext } from "./AuthProvider";
+import {
+  deletePost,
+  likePost,
+  removeLikeFromPost,
+} from "../features/posts/postsSlice";
+import { auth } from "../firebase";
 import UpdatePostModal from "./UpdatePostModal";
 
 export default function ProfilePostCard({ post }) {
@@ -15,8 +19,7 @@ export default function ProfilePostCard({ post }) {
   // const [likes, setLikes] = useState([]);
 
   const dispatch = useDispatch();
-  const { currentUser } = useContext(AuthContext);
-  const userId = currentUser.userId;
+  const userId = auth.currentUser.uid;
 
   const isLiked = likes.includes(userId);
 
@@ -38,6 +41,10 @@ export default function ProfilePostCard({ post }) {
   const removeFromLikes = () => {
     setLikes(likes.filter((id) => id !== userId));
     dispatch(removeLikeFromPost({ userId, postId }));
+  };
+
+  const handleDelete = () => {
+    dispatch(deletePost({ userId, postId }));
   };
 
   return (
@@ -80,7 +87,7 @@ export default function ProfilePostCard({ post }) {
               onClick={handleShowUpdateModal}
             ></i>
           </Button>
-          <Button variant="light">
+          <Button variant="light" onClick={handleDelete}>
             <i className="bi bi-trash"></i>
           </Button>
           <UpdatePostModal
