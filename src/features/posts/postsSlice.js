@@ -46,19 +46,15 @@ export const likePost = createAsyncThunk(
   "posts/likePost",
   async ({ userId, postId }) => {
     try {
-      const postsRef = doc(
-        db,
-        `users/Ahuaw1CTYAO0ra5TJrfdqPhSyiq2/posts/anDygZoa6xyKIjf4PWCS`
-      );
-      // const postsRef = doc(db, `users/${userId}/posts/${postId}`);
-      const docSnap = await getDoc(postsRef);
+      const postRef = doc(db, `users/${userId}/posts/${postId}`);
+      const docSnap = await getDoc(postRef);
       console.log(docSnap.exists());
 
       if (docSnap.exists()) {
         const postData = docSnap.data();
         const likes = [...postData.likes, userId];
         console.log(likes);
-        await setDoc(postsRef, { ...postData, likes });
+        await setDoc(postRef, { ...postData, likes });
       }
 
       return { userId, postId };
@@ -73,15 +69,15 @@ export const removeLikeFromPost = createAsyncThunk(
   "posts/removeLikeFromPost",
   async ({ userId, postId }) => {
     try {
-      const postsRef = doc(db, `users/${userId}/posts/${postId}`);
-      const docSnap = await getDoc(postsRef);
+      const postRef = doc(db, `users/${userId}/posts/${postId}`);
+      const docSnap = await getDoc(postRef);
 
       if (docSnap.exists()) {
         const postData = docSnap.data(); // old data
         // const postData = {id: 1, content: 'hello', likes: ['a']}
         const likes = postData.likes.filter((id) => id !== userId);
         // const likes = [];
-        await setDoc(postsRef, { ...postData, likes });
+        await setDoc(postRef, { ...postData, likes });
         // await setDoc(postsRef, { id: 1, content: 'hello', likes: ['a'], likes });
         // await setDoc(postsRef, { id: 1, content: 'hello', likes: []});
       }
