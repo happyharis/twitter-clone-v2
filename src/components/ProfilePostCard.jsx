@@ -10,6 +10,14 @@ import { auth } from "../firebase";
 import UpdatePostModal from "./UpdatePostModal";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Profile post card component that takes in the post object.
+ * @param {Object} post - object
+ * @param {string} post.content - string
+ * @param {string} post.id - string
+ * @param {string} post.imageUrl - string
+ * @param {Array} post.likes - array
+ */
 export default function ProfilePostCard({ post }) {
   const { content, id: postId, imageUrl } = post;
   // const content = post.content
