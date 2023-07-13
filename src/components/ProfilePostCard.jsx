@@ -8,6 +8,7 @@ import {
 } from "../features/posts/postsSlice";
 import { auth } from "../firebase";
 import UpdatePostModal from "./UpdatePostModal";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePostCard({ post }) {
   const { content, id: postId, imageUrl } = post;
@@ -32,6 +33,7 @@ export default function ProfilePostCard({ post }) {
   const handleCloseUpdateModal = () => setShowUpdateModal(false);
 
   const handleLike = () => (isLiked ? removeFromLikes() : addToLikes());
+  const navigate = useNavigate();
 
   const addToLikes = () => {
     setLikes([...likes, userId]);
@@ -45,6 +47,10 @@ export default function ProfilePostCard({ post }) {
 
   const handleDelete = () => {
     dispatch(deletePost({ userId, postId }));
+  };
+
+  const navigateToComments = () => {
+    navigate(`/comments/${postId}`);
   };
 
   return (
@@ -64,7 +70,7 @@ export default function ProfilePostCard({ post }) {
         <p>{content}</p>
         <Image src={imageUrl} style={{ width: 150 }} />
         <div className="d-flex justify-content-between">
-          <Button variant="light">
+          <Button variant="light" onClick={navigateToComments}>
             <i className="bi bi-chat"></i>
           </Button>
           <Button variant="light">
