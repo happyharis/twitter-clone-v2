@@ -3,7 +3,7 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
+  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
@@ -31,24 +31,35 @@ export default function CommentsMidBody() {
   const { id } = useParams();
 
   useEffect(() => {
-    async function getComments() {
+    const getComments = () => {
       try {
         const commentsQuery = query(
           collection(db, `users/${uid}/posts`),
           where("parentPostId", "==", id)
         );
-        const commentsSnapshot = await getDocs(commentsQuery);
-        const commentsList = commentsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setComments(commentsList);
-        console.log(commentsList);
+
+        // Use onSnapshot instead of getDocs
+        const unsubscribe = onSnapshot(commentsQuery, (querySnapshot) => {
+          const commentsList = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setComments(commentsList);
+          console.log(commentsList);
+        });
+
+        // Return the function to unsubscribe when component is unmounted
+        return unsubscribe;
       } catch (error) {
         console.error(error);
       }
-    }
-    getComments();
+    };
+
+    // Call getComments and catch the unsubscribe function
+    const unsubscribe = getComments();
+
+    // Use returned function in the cleanup
+    return () => unsubscribe();
   }, [uid, id]);
 
   useEffect(() => {
