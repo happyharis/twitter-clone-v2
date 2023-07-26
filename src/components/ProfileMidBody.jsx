@@ -1,9 +1,10 @@
-import jwt_decode from "jwt-decode";
+
+import jwtDecode from "jwt-decode";
 import { useEffect } from "react";
 import { Button, Col, Image, Nav, Row, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import ProfilePostCard from "./ProfilePostCard";
 import { fetchPostsByUser } from "../features/posts/postsSlice";
+import ProfilePostCard from "./ProfilePostCard";
 
 export default function ProfileMidBody() {
   const url =
@@ -18,8 +19,10 @@ export default function ProfileMidBody() {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      const decodedToken = jwt_decode(token);
+
+      const decodedToken = jwtDecode(token);
       const userId = decodedToken.id;
+      console.log(userId);
       dispatch(fetchPostsByUser(userId));
     }
   }, [dispatch]);
@@ -28,15 +31,17 @@ export default function ProfileMidBody() {
     <Col sm={6} className="bg-light" style={{ border: "1px solid lightgrey" }}>
       <Image src={url} fluid />
       <br />
+
       <Image
         src={pic}
         roundedCircle
         style={{
-          width: 150,
+
           position: "absolute",
           top: "140px",
-          border: "4px solid #F8F9FA",
           marginLeft: 15,
+          width: 150,
+          border: "4px solid #F8F9FA",
         }}
       />
 
@@ -55,10 +60,9 @@ export default function ProfileMidBody() {
         Haris
       </p>
       <p style={{ marginBottom: "2px" }}>@haris.samingan</p>
-      <p>
-        I help people switch careers to be a software developer at
-        sigmaschool.co
-      </p>
+
+      <p>I help people</p>
+
       <p>Entrepreneur</p>
       <p>
         <strong>271</strong> Following <strong>610</strong> Followers
@@ -68,27 +72,27 @@ export default function ProfileMidBody() {
           <Nav.Link eventKey="/home">Tweets</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-1">Replies</Nav.Link>
+
+          <Nav.Link eventKey="replies">Replies</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-2">Highlights</Nav.Link>
+          <Nav.Link eventKey="highlights">Highlights</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-3">Media</Nav.Link>
+          <Nav.Link eventKey="media">Media</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-4">Likes</Nav.Link>
+          <Nav.Link eventKey="likes">Likes</Nav.Link>
+
         </Nav.Item>
       </Nav>
       {loading && (
         <Spinner animation="border" className="ms-3 mt-3" variant="primary" />
       )}
       {posts.map((post) => (
-        <ProfilePostCard
-          key={post.id}
-          content={post.content}
-          postId={post.id}
-        />
+
+        <ProfilePostCard key={post.id} content={post.content} />
+
       ))}
     </Col>
   );
