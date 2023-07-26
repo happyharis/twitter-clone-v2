@@ -12,7 +12,6 @@ export default function NewPostModal({ show, handleClose }) {
     handleClose();
     setPostContent("");
   };
-
   return (
     <>
       <Modal show={show} onHide={handleClose}>

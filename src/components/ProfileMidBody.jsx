@@ -1,3 +1,4 @@
+
 import jwtDecode from "jwt-decode";
 import { useEffect } from "react";
 import { Button, Col, Image, Nav, Row, Spinner } from "react-bootstrap";
@@ -18,12 +19,14 @@ export default function ProfileMidBody() {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
+
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.id;
       console.log(userId);
       dispatch(fetchPostsByUser(userId));
     }
   }, [dispatch]);
+
   return (
     <Col sm={6} className="bg-light" style={{ border: "1px solid lightgrey" }}>
       <Image src={url} fluid />
@@ -33,6 +36,7 @@ export default function ProfileMidBody() {
         src={pic}
         roundedCircle
         style={{
+
           position: "absolute",
           top: "140px",
           marginLeft: 15,
@@ -40,6 +44,7 @@ export default function ProfileMidBody() {
           border: "4px solid #F8F9FA",
         }}
       />
+
       <Row className="justify-content-end">
         <Col xs="auto">
           <Button className="rounded-pill mt-2" variant="outline-secondary">
@@ -47,6 +52,7 @@ export default function ProfileMidBody() {
           </Button>
         </Col>
       </Row>
+
       <p
         className="mt-5"
         style={{ margin: 0, fontWeight: "bold", fontSize: "15px" }}
@@ -54,7 +60,9 @@ export default function ProfileMidBody() {
         Haris
       </p>
       <p style={{ marginBottom: "2px" }}>@haris.samingan</p>
+
       <p>I help people</p>
+
       <p>Entrepreneur</p>
       <p>
         <strong>271</strong> Following <strong>610</strong> Followers
@@ -64,6 +72,7 @@ export default function ProfileMidBody() {
           <Nav.Link eventKey="/home">Tweets</Nav.Link>
         </Nav.Item>
         <Nav.Item>
+
           <Nav.Link eventKey="replies">Replies</Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -74,13 +83,16 @@ export default function ProfileMidBody() {
         </Nav.Item>
         <Nav.Item>
           <Nav.Link eventKey="likes">Likes</Nav.Link>
+
         </Nav.Item>
       </Nav>
       {loading && (
         <Spinner animation="border" className="ms-3 mt-3" variant="primary" />
       )}
       {posts.map((post) => (
+
         <ProfilePostCard key={post.id} content={post.content} />
+
       ))}
     </Col>
   );

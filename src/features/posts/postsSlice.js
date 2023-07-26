@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 const BASE_URL =
   "https://twitter-api-sigmaschooltech.sigma-school-full-stack.repl.co";
 
+
 export const fetchPostsByUser = createAsyncThunk(
   "posts/fetchByUser",
   async (userId) => {
@@ -21,7 +22,9 @@ export const savePost = createAsyncThunk(
     const userId = decode.id;
 
     const data = {
-      title: "post title",
+
+      title: "Post Title",
+
       content: postContent,
       user_id: userId,
     };
@@ -31,9 +34,11 @@ export const savePost = createAsyncThunk(
   }
 );
 
+
 const postsSlice = createSlice({
   name: "posts",
   initialState: { posts: [], loading: true },
+
   extraReducers: (builder) => {
     builder.addCase(fetchPostsByUser.fulfilled, (state, action) => {
       state.posts = action.payload;
