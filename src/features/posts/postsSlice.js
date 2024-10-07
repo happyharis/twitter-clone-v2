@@ -29,10 +29,13 @@ export const savePost = createAsyncThunk(
   async ({ userId, postContent, file }) => {
     // file = {name: "downloads/image.jpg"}
     try {
-      const imageRef = ref(storage, `posts/${file.name}`)
-      const response = await uploadBytes(imageRef, file)
-      const imageUrl = await getDownloadURL(response.ref)
-      // const imageUrl = `storage.google.com/image.jpg`
+      let imageUrl = ''
+      if (file !== null) {
+        const imageRef = ref(storage, `posts/${file.name}`)
+        const response = await uploadBytes(imageRef, file)
+        imageUrl = await getDownloadURL(response.ref)
+        // const imageUrl = `storage.google.com/image.jpg`
+      }
 
       const postsRef = collection(db, `users/${userId}/posts`);
       const newPostRef = doc(postsRef);
