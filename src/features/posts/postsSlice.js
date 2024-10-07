@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../firebase";
 
 export const fetchPostsByUser = createAsyncThunk(
   "posts/fetchByUser",
@@ -24,11 +26,17 @@ export const fetchPostsByUser = createAsyncThunk(
 
 export const savePost = createAsyncThunk(
   "posts/savePost",
-  async ({ userId, postContent }) => {
+  async ({ userId, postContent, file }) => {
+    // file = {name: "downloads/image.jpg"}
     try {
+      const imageRef = ref(storage, `posts/${file.name}`)
+      const response = await uploadBytes(imageRef, file)
+      const imageUrl = await getDownloadURL(response.ref)
+      // const imageUrl = `storage.google.com/image.jpg`
+
       const postsRef = collection(db, `users/${userId}/posts`);
       const newPostRef = doc(postsRef);
-      await setDoc(newPostRef, { content: postContent, likes: [] });
+      await setDoc(newPostRef, { content: postContent, likes: [], imageUrl });
       const newPost = await getDoc(newPostRef);
 
       const post = {
