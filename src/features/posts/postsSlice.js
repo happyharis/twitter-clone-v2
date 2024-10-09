@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase";
+import { db, storage } from "../../firebase";
 
 export const fetchPostsByUser = createAsyncThunk(
   "posts/fetchByUser",
@@ -48,6 +47,56 @@ export const savePost = createAsyncThunk(
       };
 
       return post;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+);
+
+export const updatePost = createAsyncThunk(
+  "posts/updatePost",
+  async ({ userId, postId, newPostContent, newFile }) => {
+    // newFile = {name: "downloads/image.jpg"}
+    console.log({ userId, postId, newPostContent, newFile })
+    try {
+      let newImageUrl = ''
+      if (newFile !== null) {
+        const imageRef = ref(storage, `posts/${newFile.name}`)
+        const response = await uploadBytes(imageRef, newFile)
+        newImageUrl = await getDownloadURL(response.ref)
+        // const newImageUrl = `storage.google.com/image.jpg`
+      }
+
+      const postRef = doc(db, `users/${userId}/posts/${postId}`);
+      const postSnap = await getDoc(postRef)
+
+      // if the post exists
+      if (postSnap.exists()) {
+        console.log('post.exist')
+        const postData = postSnap.data() // existing data of our post
+        // const postData = {content: 'hello', imageUrl: 'firebase.storage.com/photos/1', id: 1}
+
+        const updatedData = {
+          // if user don't want to update the text/content of the tweet, it will be empty string
+          // and empty string is a false-y boolena value
+          // and postData.content is 'hello'
+          content: newPostContent || postData.content,
+          // then it will become
+          // content: 'hello',
+          imageUrl: newImageUrl || postData.imageUrl,
+          // this applies to the imageUrl as well
+          ...postData
+          // ...postData will also have the other key value pair, in this case
+          // id: 1
+        }
+        await updateDoc(postRef, updatedData).catch(e => console.error(e))
+        const updatedPost = { id: postId, ...updatedData }
+        return updatedPost
+      } else {
+        throw new Error("post don't exisst")
+      }
+
     } catch (error) {
       console.error(error);
       throw error;
@@ -132,6 +181,35 @@ const postsSlice = createSlice({
             (id) => id !== userId
           );
         }
+      })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        // action = {payload: {id: 1,  content: 'godoby', imageUrl: 'image.com/2'}}
+        // state.posts = [
+        //   {id: 1,  content: 'Hello', imageUrl: 'image.com/1'},
+        //   {id: 2,  content: 'haris', imageUrl: 'image.com/567'},
+        // ]
+
+        const updatedPost = action.payload
+
+        // return the index of the post that we want to update
+        const postIndex = state.posts.findIndex(
+          post => post.id === updatedPost.id
+        )
+        // since we want to update id 1 post, it will return us index 0
+        // const postIndex = 0
+
+        if (postIndex !== -1) {
+          console.log(updatedPost)
+          state.posts[postIndex] = updatedPost
+        }
+        // state.posts[0] = updatePost
+        // state.posts[0] = {id: 1,  content: 'godoby', imageUrl: 'image.com/2'}
+
+        // ANd now the new state posts is:
+        // state.posts = [
+        //   {id: 1,  content: 'godoby', imageUrl: 'image.com/2'},
+        //   {id: 2,  content: 'haris', imageUrl: 'image.com/567'},
+        // ]
       });
   },
 });
